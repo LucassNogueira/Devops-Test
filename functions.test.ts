@@ -4,11 +4,12 @@ describe("shuffleArray should", () => {
   // CODE HERE
 
   test("shuffleArray should return an array", () => {
-    expect(shuffleArray).toBe(shuffleArray);
+    const testArr = shuffleArray([22, 33, 55, 66, 77, 88, 99]);
+    expect(testArr).toBeInstanceOf(Array);
   });
 
   test("length is the same as length of array fix commit", () => {
-    const length = shuffleArray.length;
-    expect(length).toEqual(shuffleArray.length);
+    const array = shuffleArray([22, 33, 55, 66, 77, 88, 99]);
+    expect(array).toHaveLength(7);
   });
 });
