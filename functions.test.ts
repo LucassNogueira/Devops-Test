@@ -7,7 +7,7 @@ describe("shuffleArray should", () => {
     expect(shuffleArray).toBe(shuffleArray);
   });
 
-  test("length is the same as length of array", () => {
+  test("length is the same as length of array fix commit", () => {
     const length = shuffleArray.length;
     expect(length).toEqual(shuffleArray.length);
   });
