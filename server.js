@@ -1,9 +1,18 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const app = express();
 const { bots, playerRecord } = require("./data");
 const { shuffleArray } = require("./utils");
+const Rollbar = require("rollbar");
 
+const rollbar = new Rollbar({
+  accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
+
+rollbar.log("Hello world!");
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -11,7 +20,7 @@ app.get("/api/robots", (req, res) => {
   try {
     res.status(200).send(botsArr);
   } catch (error) {
-    console.log("ERROR GETTING BOTS", error);
+    rollbar.error(error, "Error getting robots");
     res.sendStatus(400);
   }
 });
@@ -21,6 +30,7 @@ app.get("/api/robots/five", (req, res) => {
     let shuffled = shuffleArray(bots);
     let choices = shuffled.slice(0, 5);
     let compDuo = shuffled.slice(6, 8);
+    rollbar.info("5 random options arrived");
     res.status(200).send({ choices, compDuo });
   } catch (error) {
     console.log("ERROR GETTING FIVE BOTS", error);
@@ -59,16 +69,19 @@ app.post("/api/duel", (req, res) => {
       res.status(200).send("You lost!");
     } else {
       playerRecord.losses++;
+      rollbar.error("losses increase but you won");
       res.status(200).send("You won!");
     }
   } catch (error) {
     console.log("ERROR DUELING", error);
+    rollbar.error("error, " + error);
     res.sendStatus(400);
   }
 });
 
 app.get("/api/player", (req, res) => {
   try {
+    rollbar.info("player has bots");
     res.status(200).send(playerRecord);
   } catch (error) {
     console.log("ERROR GETTING PLAYER STATS", error);
